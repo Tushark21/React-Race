@@ -1,1 +1,1 @@
-# React-Race
+# ReactRace
