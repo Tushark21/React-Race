@@ -1,1 +1,1 @@
-# react-race
+# React Race 🏁
