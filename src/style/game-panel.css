@@ -1,0 +1,7 @@
+.game_panel{
+    background-color: rgb(71, 66, 66);
+    height: 100%;
+    width: 100%;
+    border: 10px solid rgb(48, 48, 48);
+    
+}
