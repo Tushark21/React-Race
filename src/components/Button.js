@@ -1,16 +1,20 @@
 import React from 'react';
 
+
 class Button extends React.Component {
+
+  handleClick=(history,loc)=>{
+    
+    console.log(loc);
+    history.push(loc);
+  }
+
   render() {
     return (
-      <div className="container">
-        <div className="row justify-content-md-center">
-          <div className="col-6">
-            <button className="button_class">
-              {this.props.text}
-            </button>
-          </div>
-        </div>
+      <div >
+        <button className="button_class" onClick={()=>(this.handleClick(this.props.history,'/'+this.props.loc))}>
+          {this.props.text}
+        </button>
       </div>
     );
   }
