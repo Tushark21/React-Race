@@ -11,7 +11,7 @@ function Menu() {
   const history = useHistory();
   
   return (
-    <div className="App">
+    <div>
       <Heading title={"Menu"} />
 
       <Button text={"Start"} history={history} loc={"gamescreen"}>
@@ -26,7 +26,7 @@ function Menu() {
 
       </Button>
       <br></br>
-      <Button text={"Exit"} history={history} loc={"Exit"}>
+      <Button text={"Exit"} history={history} loc={"exit"}>
 
       </Button>
 

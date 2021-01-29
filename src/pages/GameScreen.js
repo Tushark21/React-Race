@@ -6,11 +6,10 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 
 function GameScreen() {
   return (
-    <div className="App">
+    <div>
       <Heading title={"Game View"}/>
 
       <GamePanel />
-      
     </div>
   );
 }

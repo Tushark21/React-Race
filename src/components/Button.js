@@ -3,16 +3,20 @@ import React from 'react';
 
 class Button extends React.Component {
 
-  handleClick=(history,loc)=>{
-    
+  handleClick = (history, loc) => {
     console.log(loc);
-    history.push(loc);
+    if (loc === '/exit') {
+      window.close();
+    }
+    else {
+      history.push(loc);
+    }
   }
 
   render() {
     return (
       <div >
-        <button className="button_class" onClick={()=>(this.handleClick(this.props.history,'/'+this.props.loc))}>
+        <button className="button_class" onClick={() => (this.handleClick(this.props.history, '/' + this.props.loc))}>
           {this.props.text}
         </button>
       </div>

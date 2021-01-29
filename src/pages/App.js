@@ -14,11 +14,11 @@ import {BrowserRouter as Router,Switch,Route } from 'react-router-dom';
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div className={'App'}>
         <Header />
         <div className="container">
           <div className="row justify-content-md-center">
-            <div className="col-10">
+            <div className="col-12">
               
               <Router>
                 <Switch>

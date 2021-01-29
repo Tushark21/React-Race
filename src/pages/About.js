@@ -6,7 +6,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 
 function About() {
     return (
-        <div className="App">
+        <div>
             <Heading title={"About"}/>
 
             <Container content={"This is About Page"}/>

@@ -6,8 +6,8 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 
 function Options() {
   return (
-    <div className="App">
-      <Heading title={"Options"}/>
+    <div>
+      <Heading className={'heading_class'} title={"Options"}/>
 
       <Container content={"Options will be given Here."}/>
       
