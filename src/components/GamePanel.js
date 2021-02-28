@@ -6,8 +6,8 @@ class GamePanel extends React.Component {
       <div className="container">
         <div className="row justify-content-md-center">
           <div className="col-8">
-            <canvas className="game_panel">
-                Hello
+            <canvas id={"mycanvas"} className="game_panel">
+                
             </canvas>
           </div>
         </div>

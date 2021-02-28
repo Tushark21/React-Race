@@ -3,6 +3,7 @@ import '../style/button.css';
 import GamePanel from '../components/GamePanel';
 import Heading from '../components/Heading';
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
+import Header from '../components/Header';
 
 function GameScreen() {
   return (

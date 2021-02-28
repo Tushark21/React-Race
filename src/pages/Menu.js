@@ -4,89 +4,39 @@ import '../style/game-panel.css';
 import Button from '../components/Button';
 import Heading from '../components/Heading';
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { Col, Container, Row } from 'react-bootstrap';
 
 function Menu() {
 
   const history = useHistory();
-  
+
   return (
-    <div>
-      <Heading title={"Menu"} />
+    <div className='text_class main_container'>
+      <div style={{display: 'flex', alignItems: 'flex-start' }}>
+        <div style={{display: 'flex', alignItems: 'flex-start' }}>
+          <div>
+            <p style={{ fontSize: '320px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              R
+          </p>
+          </div>
+          <div style={{display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <p style={{ fontSize: '120px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>eact</p>
+            <p style={{ fontSize: '120px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>ace</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>
+          <Button text={"Start"} history={history} loc={"gamescreen"} />
 
-      <Button text={"Start"} history={history} loc={"gamescreen"}>
+          <Button text={"Options"} history={history} loc={"options"} />
 
-      </Button>
-      <br></br>
-      <Button text={"Option"} history={history} loc={"options"}>
-
-      </Button>
-      <br></br>
-      <Button text={"About"} history={history} loc={"about"}>
-
-      </Button>
-      <br></br>
-      <Button text={"Exit"} history={history} loc={"exit"}>
-
-      </Button>
-
+          <Button text={"About"} history={history} loc={"about"} />
+        </div>
+      </div>
     </div>
   );
 }
 
 export default Menu;
-
-
-
-/*
-
-
-      <Router>
-        <Button text={"Start"} loc={"gamescreen"}>
-          <Link to="/gamescreen">GameScreen</Link>
-        </Button>
-        <br></br>
-        <Button text={"Option"} loc={"option"}>
-          <Link to="/option">Options</Link>
-        </Button>
-        <br></br>
-      <Button text={"About"} loc={"about"}>
-          <Link to="/about">About</Link>
-        </Button>
-        <br></br>
-        <Button text={"Exit"} loc={"Exit"}>
-          <Link to="/about">About</Link>
-        </Button>
-        <br></br>
-
-            <Switch>
-            <Route path="/about">
-              <About />
-            </Route>
-
-            <Route path="/gamescreen">
-              <GameScreen />
-            </Route>
-
-            <Route path="/options">
-              <Options />
-              </Route >
-
-              <Route path="/">
-                <Menu />
-              </Route>
-
-            </Switch>
-        </Router>
-
-
-<Router history = {browserHistory}>
-      <Route path = "/" component = {App}>
-         <IndexRoute component = {Home} />
-         <Route path = "home" component = {App} />
-         <Route path = "option" component = {GameScreen} />
-         <Route path = "about" component = {GameScreen} />
-         <Route path = "GameScreen" component = {GameScreen} />
-      </Route>
-   </Router>
-*/

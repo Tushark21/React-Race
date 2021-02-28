@@ -15,7 +15,7 @@ class App extends React.Component {
   render() {
     return (
       <div className={'App'}>
-        <Header />
+        {/*<Header />*/}
         <div className="container">
           <div className="row justify-content-md-center">
             <div className="col-12">
