@@ -1,18 +1,19 @@
 import React from 'react'
 import { Col, Container, Row } from 'react-bootstrap';
+import Header from '../components/Header';
 
 class PrimaryLayout extends React.Component {
     render() {
         return (
-            <div>
-                <h1>{this.props.heading}</h1>
-                <Container>
-                    <Row className="row justify-content-md-center">
-                        <Col className="col-12">
+            <div className={'App'}>
+                {<Header />}
+                <div className="container">
+                    <div className="row justify-content-md-center">
+                        <div className="col-12">
                             {this.props.children}
-                        </Col>
-                    </Row>
-                </Container>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         );

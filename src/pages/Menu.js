@@ -6,33 +6,30 @@ import Heading from '../components/Heading';
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import { useHistory } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
+import Name from '../components/Name';
 
 function Menu() {
 
   const history = useHistory();
 
   return (
-    <div className='text_class main_container'>
-      <div style={{display: 'flex', alignItems: 'flex-start' }}>
-        <div style={{display: 'flex', alignItems: 'flex-start' }}>
-          <div>
-            <p style={{ fontSize: '320px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-              R
-          </p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <p style={{ fontSize: '120px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>eact</p>
-            <p style={{ fontSize: '120px', display: 'flex', flexDirection: 'column',flexWrap: 'wrap', justifyContent: 'flex-end' }}>ace</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div>
-          <Button text={"Start"} history={history} loc={"gamescreen"} />
 
-          <Button text={"Options"} history={history} loc={"options"} />
+    <div className={'App'}>
+      <div className="container">
+        <div className="row justify-content-md-center">
+          <div className="col-12">
+            <div className='text_class main_container'>
+              <Name fontSizes={['120px', '340px']} />
 
-          <Button text={"About"} history={history} loc={"about"} />
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Button text={"Start"} history={history} loc={"gamescreen"} />
+
+                <Button text={"Options"} history={history} loc={"options"} />
+
+                <Button text={"About"} history={history} loc={"about"} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -4,14 +4,13 @@ import GamePanel from '../components/GamePanel';
 import Heading from '../components/Heading';
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import Header from '../components/Header';
+import PrimaryLayout from '../layout/PrimaryLayout';
 
 function GameScreen() {
   return (
-    <div>
-      <Heading title={"Game View"}/>
-
+    <PrimaryLayout>
       <GamePanel />
-    </div>
+    </PrimaryLayout>
   );
 }
 
