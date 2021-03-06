@@ -13,14 +13,16 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 class App extends React.Component {
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route path="/" exact component={Menu} />
-          <Route path="/gamescreen" exact component={GameScreen} />
-          <Route path="/options" exact component={Options} />
-          <Route path="/about" exact component={About} />
-        </Switch>
-      </Router>
+      <div className="App">
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Menu} />
+            <Route path="/gamescreen" exact component={GameScreen} />
+            <Route path="/options" exact component={Options} />
+            <Route path="/about" exact component={About} />
+          </Switch>
+        </Router>
+      </div>
     );
   }
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Col, Container, Row } from 'react-bootstrap';
 import Header from '../components/Header';
 
 class PrimaryLayout extends React.Component {
@@ -7,12 +6,8 @@ class PrimaryLayout extends React.Component {
         return (
             <div className={'App'}>
                 {<Header />}
-                <div className="container">
-                    <div className="row justify-content-md-center">
-                        <div className="col-12">
-                            {this.props.children}
-                        </div>
-                    </div>
+                <div className="main_container">
+                    {this.props.children}
                 </div>
             </div>
 
