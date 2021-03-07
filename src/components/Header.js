@@ -1,6 +1,4 @@
 import React from 'react';
-import { Navbar } from 'react-bootstrap'
-import Name from './Name';
 
 class Header extends React.Component {
   constructor(props) {
