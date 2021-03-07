@@ -37,7 +37,7 @@ class Header extends React.Component {
     return (
       <div style={{ backgroundColor: '', display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ marginLeft: '10px' }}>
-          <img src={require('../assets/app-logo.png').default} style={{width: '60px', height: '60px'}}></img>
+          <img alt='app-logo' src={require('../assets/app-logo.png').default} style={{width: '60px', height: '60px'}}></img>
         </div>
         <div id="container" onClick={this.toggle}>
           <div >
