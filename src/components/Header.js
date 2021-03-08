@@ -35,7 +35,7 @@ class Header extends React.Component {
 
   render() {
     return (
-      <div style={{ backgroundColor: '', display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ zIndex:'10', backgroundColor: '', display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ marginLeft: '10px' }}>
           <img alt='app-logo' src={require('../assets/app-logo.png').default} style={{width: '60px', height: '60px'}}></img>
         </div>

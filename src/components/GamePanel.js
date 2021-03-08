@@ -116,6 +116,7 @@ class GamePanel extends React.Component {
   gameLoop() {
     const num = this.randomIndex;
 
+    //for new obstacles
     if (!this.obstacles[num].rendered) {
       let leftPos = Math.floor(Math.random() * 50) + 22;
       leftPos = leftPos < 22 ? 22 : leftPos;
@@ -125,6 +126,7 @@ class GamePanel extends React.Component {
       this.obstacles[num].rendered = true;
     }
 
+    //for obstacles movement
     for (let i = 0; i < 5; i++) {
       if (this.obstacles[i].rendered) {
         this.obstacles[i].top += this.obstacles[i].speed;
@@ -137,6 +139,18 @@ class GamePanel extends React.Component {
       }
     }
 
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (this.isCollided(this.createRect(this.obstacles[i]), this.createRect(this.obstacles[j]))) {
+          if (this.obstacles[i].top < this.obstacles[j].top) {
+            this.obstacles[j].speed = this.obstacles[i].speed;
+            this.obstacles[j].top = this.obstacles[i].top - 30;
+          }
+        }
+      }
+    }
+
+    //for bars movement
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 3; j++) {
         this.bars[i][j].top += this.speed;
@@ -145,6 +159,18 @@ class GamePanel extends React.Component {
         }
       }
       this.bars.push(this.temp);
+    }
+
+    const playerObj = {
+      left: this.state.left,
+      top: this.state.top
+    }
+    for (let i = 0; i < 5; i++) {
+      if (this.isCollided(this.createRect(playerObj), this.createRect(this.obstacles[i]))) {
+        clearInterval(this.timerID1);
+        clearInterval(this.timerID2);
+        break;
+      }
     }
 
     this.setState({});
@@ -157,16 +183,68 @@ class GamePanel extends React.Component {
     this.speed = this.speed > 2 ? 2 : this.speed;
   }
 
+  createRect(obj) {
+    return ({
+      left: obj.left,
+      right: obj.left + 5,
+      top: obj.top,
+      bottom: obj.top + 30
+    });
+  }
+
+  isCollided(obj1, obj2) {
+    //object 1 is always below object 2
+    if (obj1.top < obj2.top) {
+      const tempObj = obj1;
+      obj1 = obj2;
+      obj2 = tempObj;
+    }
+
+    //right-bottom
+    if (this.isInside(obj1, obj2.right, obj2.bottom)) {
+      return true;
+    }
+
+    //left-bottom
+    else if (this.isInside(obj1, obj2.left, obj2.bottom)) {
+      return true;
+    }
+
+    //right-top
+    if (this.isInside(obj1, obj2.right, obj2.top)) {
+      return true;
+    }
+
+    //left-top
+    if (this.isInside(obj1, obj2.left, obj2.top)) {
+      return true;
+    }
+
+    //mid-bottom
+    if (this.isInside(obj1, obj2.left+2, obj2.bottom)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isInside(rect, x, y) {
+    if ((x > rect.left && x < rect.right) && (y > rect.top && y < rect.bottom)) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
 
     return (
-      <div style={{ height: '100%', backgroundColor: '#000000', overflow: 'hidden' }} >
+      <div style={{ height: '100%', backgroundColor: '#00000080', overflow: 'hidden' }} >
         <Header></Header>
         <img alt='sprite' ref={this.playerRefs} style={{ zIndex: '1', position: 'fixed', left: this.state.left + '%', top: this.state.top + '%' }} src={require('../assets/car1.png').default}></img>
 
         {/* boundary */}
-        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'green', position: 'fixed', left: '20%', top: '0%' }} ></div>
-        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'green', position: 'fixed', left: '80%', top: '0%' }} ></div>
+        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'grey', position: 'fixed', left: '20%', top: '0%' }} ></div>
+        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'grey', position: 'fixed', left: '80%', top: '0%' }} ></div>
 
         {/* road bars mid */}
         <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[0][0].left + '%', top: this.bars[0][0].top + '%' }} ></div>
