@@ -8,7 +8,9 @@ class GamePanel extends React.Component {
     this.playerRefs = React.createRef();
 
     this.speed = 0.5;
-    this.speedIncreased = 0;
+    this.horizontalSpeed = 0.5;
+    this.verticalSpeed = 0.5;
+    this.move = 'not';
 
     this.obstacles = [];
 
@@ -49,47 +51,28 @@ class GamePanel extends React.Component {
       //console.log('size',node.width);
 
       if (event.key === 'ArrowRight') {
-        let newValue = this.state.left + this.speed;
-        newValue = newValue > 74 ? 74 : newValue;
-
-        this.setState({
-          left: newValue
-        })
+        this.move = 'right';
       }
 
       else if (event.key === 'ArrowLeft') {
-        let newValue = this.state.left - this.speed;
-        newValue = newValue < 22 ? 22 : newValue;
-
-        this.setState({
-          left: newValue
-        })
+        this.move = 'left';
       }
 
       else if (event.key === 'ArrowUp') {
-        let newValue = this.state.top - this.speed;
-        newValue = newValue < 50 ? 50 : newValue;
-        this.changeSpeed(1);
-
-        this.setState({
-          top: newValue
-        })
+        this.move = 'up';
       }
 
       else if (event.key === 'ArrowDown') {
-        let newValue = this.state.top + this.speed;
-        newValue = newValue > 75 ? 75 : newValue;
-        this.changeSpeed(-1);
-
-        this.setState({
-          top: newValue
-        })
+        this.move = 'down';
       }
-      else {
-        console.log(this.playerRefs);
+      else if (event.key === ' ') {
+        this.move = 'space';
       }
     });
 
+    document.body.addEventListener('keyup', (event) => {
+      this.move = 'not';
+    });
   }
 
   componentDidMount() {
@@ -114,6 +97,31 @@ class GamePanel extends React.Component {
   }
 
   gameLoop() {
+    if (this.move === 'up') {
+      let newValue = this.state.top - this.verticalSpeed;
+      newValue = newValue < 50 ? 50 : newValue;
+      this.state.top = newValue;
+      this.changeSpeed(1);
+    }
+    else if (this.move === 'down') {
+      let newValue = this.state.top + this.verticalSpeed;
+      newValue = newValue > 75 ? 75 : newValue;
+      this.state.top = newValue;
+    }
+    else if (this.move === 'space') {
+      this.changeSpeed(-1);
+    }
+    else if (this.move === 'left') {
+      let newValue = this.state.left - this.horizontalSpeed;
+      newValue = newValue < 22 ? 22 : newValue;
+      this.state.left = newValue;
+    }
+    else if (this.move === 'right') {
+      let newValue = this.state.left + this.horizontalSpeed;
+      newValue = newValue > 74 ? 74 : newValue;
+      this.state.left = newValue;
+    }
+    
     const num = this.randomIndex;
 
     //for new obstacles
@@ -143,8 +151,8 @@ class GamePanel extends React.Component {
       for (let j = 0; j < 5; j++) {
         if (this.isCollided(this.createRect(this.obstacles[i]), this.createRect(this.obstacles[j]))) {
           if (this.obstacles[i].top < this.obstacles[j].top) {
-            if(this.obstacles[i].speed >= this.obstacles[j].speed){
-              this.obstacles[i].speed -=0.1;
+            if (this.obstacles[i].speed >= this.obstacles[j].speed) {
+              this.obstacles[i].speed -= 0.1;
             }
             this.obstacles[i].top = this.obstacles[j].top - 30;
           }
@@ -181,8 +189,8 @@ class GamePanel extends React.Component {
   changeSpeed(factor) {
     this.speed += factor * 0.1;
 
-    this.speed = this.speed < 1 ? 1 : this.speed;
-    this.speed = this.speed > 2 ? 2 : this.speed;
+    this.speed = this.speed < 0.5 ? 0.5 : this.speed;
+    this.speed = this.speed > 1.5 ? 1.5 : this.speed;
   }
 
   createRect(obj) {
@@ -223,7 +231,7 @@ class GamePanel extends React.Component {
     }
 
     //mid-bottom
-    if (this.isInside(obj1, obj2.left+2, obj2.bottom)) {
+    if (this.isInside(obj1, obj2.left + 2, obj2.bottom)) {
       return true;
     }
 
