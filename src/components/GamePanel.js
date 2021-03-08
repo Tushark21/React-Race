@@ -122,7 +122,7 @@ class GamePanel extends React.Component {
       leftPos = leftPos < 22 ? 22 : leftPos;
       leftPos = leftPos > 74 ? 74 : leftPos;
       this.obstacles[num].left = leftPos;
-      this.obstacles[num].speed = (Math.random() * 1.1) + this.speed;
+      this.obstacles[num].speed = (Math.random() * 1) + this.speed + 0.2;
       this.obstacles[num].rendered = true;
     }
 
@@ -143,8 +143,10 @@ class GamePanel extends React.Component {
       for (let j = 0; j < 5; j++) {
         if (this.isCollided(this.createRect(this.obstacles[i]), this.createRect(this.obstacles[j]))) {
           if (this.obstacles[i].top < this.obstacles[j].top) {
-            this.obstacles[j].speed = this.obstacles[i].speed;
-            this.obstacles[j].top = this.obstacles[i].top - 30;
+            if(this.obstacles[i].speed >= this.obstacles[j].speed){
+              this.obstacles[i].speed -=0.1;
+            }
+            this.obstacles[i].top = this.obstacles[j].top - 30;
           }
         }
       }
