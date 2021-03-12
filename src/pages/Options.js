@@ -1,7 +1,4 @@
-import '../style/App.css';
-import '../style/button.css';
 import Heading from '../components/Heading';
-import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import PrimaryLayout from '../layout/PrimaryLayout';
 import Button from '../components/Button';
 import React from 'react';
