@@ -6,7 +6,7 @@ class PrimaryLayout extends React.Component {
         return (
             <div className={'App'}>
                 {<Header />}
-                <div className="main_container">
+                <div className={'main_container'}>
                     {this.props.children}
                 </div>
             </div>

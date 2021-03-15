@@ -6,20 +6,18 @@ function Menu() {
   const history = useHistory();
 
   return (
-    <div className='menu'>
-      <div className='text_class menu_container'>
+    <div className={'menu'}>
+      <div className={'text_class menu_container'}>
         <div>
-          <img className='screen_responsive' alt='app-logo' src={require('../assets/app-logo.png').default}></img>
+          <img className={'screen_responsive'} alt='app-logo' src={require('../assets/app-logo.png').default}></img>
         </div>
 
-        <div className='screen_responsive' style={{  display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ padding: '10px'}}>
-            <Button text="Start" history={history} loc="gamescreen" />
+        <div className={'screen_responsive button_container'}>
+          <Button text={"Start"} history={history} loc={"gamescreen"} />
 
-            <Button text="Options" history={history} loc="options" />
+          <Button text={"Options"} history={history} loc={"options"} />
 
-            <Button text="About" history={history} loc="about" />
-          </div>
+          <Button text={"About"} history={history} loc={"about"} />
         </div>
       </div>
     </div>

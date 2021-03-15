@@ -5,18 +5,20 @@ class GamePanel extends React.Component {
   constructor(props) {
     super(props);
 
-    this.playerRefs = React.createRef();
-
+    //Car Configs and Action Variable
     this.speed = 0.5;
-    this.horizontalSpeed = 0.5;
-    this.verticalSpeed = 0.5;
+    this.player = {
+      left: 48.2,
+      top: 75,
+      horizontalSpeed: 0,
+      verticalSpeed: 0,
+    }
     this.move = 'not';
 
+    //Obstacles
     this.obstacles = [];
-
     for (let i = 0; i < 5; i++) {
       this.obstacles.push({
-        ref: React.createRef(),
         left: i * 20,
         top: -200,
         speed: 0,
@@ -24,8 +26,8 @@ class GamePanel extends React.Component {
       });
     }
 
+    //Bars
     this.bars = [];
-
     for (let i = -1; i < 3; i++) {
       this.temp = [];
       for (let j = 0; j < 3; j++) {
@@ -37,35 +39,30 @@ class GamePanel extends React.Component {
       this.bars.push(this.temp);
     }
 
-    //console.log(this.obstacles);
     this.randomIndex = 0;
 
-    this.state = {
-      left: 48.2,
-      top: 75
-    }
-
+    //User Events
+    //Keyboard Event
     document.body.addEventListener('keydown', (event) => {
-      console.log(event.key);
-      //const node = this.playerRefs.current;
-      //console.log('size',node.width);
-
       if (event.key === 'ArrowRight') {
+        this.player.horizontalSpeed=this.speed;
         this.move = 'right';
       }
 
       else if (event.key === 'ArrowLeft') {
+        this.player.horizontalSpeed=-this.speed;
         this.move = 'left';
       }
 
       else if (event.key === 'ArrowUp') {
+        this.player.verticalSpeed=-this.speed;
         this.move = 'up';
         this.changeSpeed(1);
       }
 
       else if (event.key === 'ArrowDown') {
+        this.player.verticalSpeed=this.speed;
         this.move = 'down';
-        
       }
       else if (event.key === ' ') {
         this.move = 'space';
@@ -75,57 +72,56 @@ class GamePanel extends React.Component {
 
     document.body.addEventListener('keyup', (event) => {
       this.move = 'not';
+      this.player.verticalSpeed=0;
+      this.player.horizontalSpeed=0;
     });
 
     //for mobile events
     document.body.addEventListener('touchstart', (event) => {
-      //console.log(document.body.offsetWidth);
-      //console.log(document.body.offsetHeight);
-      //console.log('x:',event.touches[0].clientX);
-      //console.log('y:',event.touches[0].clientY);
+      const x = event.touches[0].clientX;
+      const y = event.touches[0].clientY;
+      const bodyWidth = document.body.offsetWidth;
+      const bodyHeight = document.body.offsetHeight;
 
-      const x=event.touches[0].clientX;
-      const y=event.touches[0].clientY;
-      const bodyWidth=document.body.offsetWidth;
-      const bodyHeight=document.body.offsetHeight;
-
-      //const node = this.playerRefs.current;
-      //console.log('size',node.width);
-
-      if (x>bodyWidth*.8) {
+      if (x > bodyWidth * .8) {
+        this.player.horizontalSpeed=this.speed;
         this.move = 'right';
       }
 
-      else if (x<bodyWidth*.2) {
+      else if (x < bodyWidth * .2) {
+        this.player.horizontalSpeed=-this.speed;
         this.move = 'left';
       }
 
-      else if (y<bodyHeight*.6) {
+      else if (y < bodyHeight * .6) {
+        this.player.verticalSpeed=-this.speed;
         this.move = 'up';
         this.changeSpeed(1);
       }
 
-      else if (y>bodyHeight*.6) {
+      else if (y > bodyHeight * .6) {
         this.move = 'down';
+        this.player.verticalSpeed=this.speed;
         this.changeSpeed(-1);
       }
     });
 
     document.body.addEventListener('touchend', (event) => {
       this.move = 'not';
-      //console.log(event)
     });
   }
 
   componentDidMount() {
+    //Game Loop
     this.timerID1 = setInterval(
       () => this.gameLoop(),
-      10
+      1
     );
 
+    //Loop to start new obstacles
     this.timerID2 = setInterval(
       () => this.generateIndex(),
-      500
+      250
     );
   }
 
@@ -139,44 +135,24 @@ class GamePanel extends React.Component {
   }
 
   gameLoop() {
-    if (this.move === 'up') {
-      let newValue = this.state.top - this.verticalSpeed;
-      newValue = newValue < 50 ? 50 : newValue;
-      this.setState({
-        top: newValue
-      });
-    }
-    else if (this.move === 'down') {
-      let newValue = this.state.top + this.verticalSpeed;
-      newValue = newValue > 75 ? 75 : newValue;
-      this.setState({
-        top: newValue
-      });
-    }
-    else if (this.move === 'left') {
-      let newValue = this.state.left - this.horizontalSpeed;
-      newValue = newValue < 22 ? 22 : newValue;
-      this.setState({
-        left: newValue
-      });
-    }
-    else if (this.move === 'right') {
-      let newValue = this.state.left + this.horizontalSpeed;
-      newValue = newValue > 74 ? 74 : newValue;
-      this.setState({
-        left: newValue
-      });
-    }
+    //Actions for each events
+    this.player.left += this.player.horizontalSpeed;
+    this.player.top += this.player.verticalSpeed;
 
-    const num = this.randomIndex;
+    this.player.left = this.player.left < 22 ? 22 : this.player.left;
+    this.player.left = this.player.left > 74 ? 74 : this.player.left;
+
+    this.player.top = this.player.top < 50 ? 50 : this.player.top;
+    this.player.top = this.player.top > 75 ? 75 : this.player.top;
 
     //for new obstacles
+    const num = this.randomIndex;
     if (!this.obstacles[num].rendered) {
       let leftPos = Math.floor(Math.random() * 50) + 22;
       leftPos = leftPos < 22 ? 22 : leftPos;
       leftPos = leftPos > 74 ? 74 : leftPos;
       this.obstacles[num].left = leftPos;
-      this.obstacles[num].speed = (Math.random() * 1) + this.speed + 0.2;
+      this.obstacles[num].speed = (Math.random() * 0.2) + this.speed + 0.2;
       this.obstacles[num].rendered = true;
     }
 
@@ -215,15 +191,11 @@ class GamePanel extends React.Component {
           this.bars[i][j].top = -40;
         }
       }
-      this.bars.push(this.temp);
     }
 
-    const playerObj = {
-      left: this.state.left,
-      top: this.state.top
-    }
+    //collisions between obstacles and car
     for (let i = 0; i < 5; i++) {
-      if (this.isCollided(this.createRect(playerObj), this.createRect(this.obstacles[i]))) {
+      if (this.isCollided(this.createRect(this.player), this.createRect(this.obstacles[i]))) {
         //clearInterval(this.timerID1);
         //clearInterval(this.timerID2);
         break;
@@ -236,8 +208,8 @@ class GamePanel extends React.Component {
   changeSpeed(factor) {
     this.speed += factor * 0.1;
 
-    this.speed = this.speed < 0.5 ? 0.5 : this.speed;
-    this.speed = this.speed > 1.5 ? 1.5 : this.speed;
+    this.speed = this.speed < 0.3 ? 0.3 : this.speed;
+    this.speed = this.speed > 1 ? 1 : this.speed;
   }
 
   createRect(obj) {
@@ -245,7 +217,7 @@ class GamePanel extends React.Component {
       left: obj.left,
       right: obj.left + 5,
       top: obj.top,
-      bottom: obj.top + 30
+      bottom: obj.top + 20
     });
   }
 
@@ -295,39 +267,39 @@ class GamePanel extends React.Component {
   render() {
 
     return (
-      <div style={{ height: '100%', backgroundColor: '#00000080', overflow: 'hidden' }} >
+      <div className={'game_panel_container'} >
         <Header></Header>
-        <img alt='sprite' ref={this.playerRefs} style={{ zIndex: '1', position: 'fixed', left: this.state.left + '%', top: this.state.top + '%' }} src={require('../assets/car1.png').default}></img>
+        <img alt={'car-sprite'} className={'sprite'} style={{ left: this.player.left + '%', top: this.player.top + '%' }} src={require('../assets/car1.png').default}></img>
 
         {/* boundary */}
-        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'grey', position: 'fixed', left: '20%', top: '0%' }} ></div>
-        <div style={{ width: '1.5%', height: '100%', zIndex: '0', backgroundColor: 'grey', position: 'fixed', left: '80%', top: '0%' }} ></div>
+        <div className={'boundary'} style={{ left: '20%' }} ></div>
+        <div className={'boundary'} style={{ left: '80%' }} ></div>
 
         {/* road bars mid */}
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[0][0].left + '%', top: this.bars[0][0].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[1][0].left + '%', top: this.bars[1][0].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[2][0].left + '%', top: this.bars[2][0].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[3][0].left + '%', top: this.bars[3][0].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[0][0].left + '%', top: this.bars[0][0].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[1][0].left + '%', top: this.bars[1][0].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[2][0].left + '%', top: this.bars[2][0].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[3][0].left + '%', top: this.bars[3][0].top + '%' }} ></div>
 
         {/* road bars left */}
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[0][1].left + '%', top: this.bars[0][1].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[1][1].left + '%', top: this.bars[1][1].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[2][1].left + '%', top: this.bars[2][1].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[3][1].left + '%', top: this.bars[3][1].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[0][1].left + '%', top: this.bars[0][1].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[1][1].left + '%', top: this.bars[1][1].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[2][1].left + '%', top: this.bars[2][1].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[3][1].left + '%', top: this.bars[3][1].top + '%' }} ></div>
 
         {/* road bars right */}
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[0][2].left + '%', top: this.bars[0][2].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[1][2].left + '%', top: this.bars[1][2].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[2][2].left + '%', top: this.bars[2][2].top + '%' }} ></div>
-        <div style={{ width: '1.5%', height: '20%', zIndex: '0', backgroundColor: 'white', position: 'fixed', left: this.bars[3][2].left + '%', top: this.bars[3][2].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[0][2].left + '%', top: this.bars[0][2].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[1][2].left + '%', top: this.bars[1][2].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[2][2].left + '%', top: this.bars[2][2].top + '%' }} ></div>
+        <div className={'bars'} style={{ left: this.bars[3][2].left + '%', top: this.bars[3][2].top + '%' }} ></div>
 
 
         {/* Obstructions */}
-        <img alt='sprite' ref={this.obstacles[0].ref} style={{ zIndex: '1', display: 'block', position: 'fixed', left: this.obstacles[0].left + '%', top: this.obstacles[0].top + '%' }} src={require('../assets/car_down1.png').default}></img>
-        <img alt='sprite' ref={this.obstacles[1].ref} style={{ zIndex: '1', display: 'block', position: 'fixed', left: this.obstacles[1].left + '%', top: this.obstacles[1].top + '%' }} src={require('../assets/car_down2.png').default}></img>
-        <img alt='sprite' ref={this.obstacles[2].ref} style={{ zIndex: '1', display: 'block', position: 'fixed', left: this.obstacles[2].left + '%', top: this.obstacles[2].top + '%' }} src={require('../assets/car_down3.png').default}></img>
-        <img alt='sprite' ref={this.obstacles[3].ref} style={{ zIndex: '1', display: 'block', position: 'fixed', left: this.obstacles[3].left + '%', top: this.obstacles[3].top + '%' }} src={require('../assets/car_down4.png').default}></img>
-        <img alt='sprite' ref={this.obstacles[4].ref} style={{ zIndex: '1', display: 'block', position: 'fixed', left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>
+        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[0].left + '%', top: this.obstacles[0].top + '%' }} src={require('../assets/car_down1.png').default}></img>
+        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[1].left + '%', top: this.obstacles[1].top + '%' }} src={require('../assets/car_down2.png').default}></img>
+        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[2].left + '%', top: this.obstacles[2].top + '%' }} src={require('../assets/car_down3.png').default}></img>
+        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[3].left + '%', top: this.obstacles[3].top + '%' }} src={require('../assets/car_down4.png').default}></img>
+        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>
 
       </div>
 

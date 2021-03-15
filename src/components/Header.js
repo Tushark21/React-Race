@@ -6,28 +6,28 @@ class Header extends React.Component {
 
     this.state = {
       togg: false,
-      classTop: 'icon top',
-      classMid: 'icon middle',
-      classBottom: 'icon bottom'
+      classTop: 'sandwich_button_bar top',
+      classMid: 'sandwich_button_bar middle',
+      classBottom: 'sandwich_button_bar bottom'
     };
   }
 
-  toggle=()=> {
+  toggle = () => {
     console.log(this.state.togg);
-    if (! this.state.togg) {
+    if (!this.state.togg) {
       this.setState({
         togg: true,
-        classTop: 'icon top move_left',
-        classMid: 'icon middle mid_rotate',
-        classBottom: 'icon bottom move_right'
+        classTop: 'sandwich_button_bar top move_left',
+        classMid: 'sandwich_button_bar middle mid_rotate',
+        classBottom: 'sandwich_button_bar bottom move_right'
       });
     }
-    else{
+    else {
       this.setState({
         togg: false,
-        classTop: 'icon top',
-        classMid: 'icon middle',
-        classBottom: 'icon bottom'
+        classTop: 'sandwich_button_bar top',
+        classMid: 'sandwich_button_bar middle',
+        classBottom: 'sandwich_button_bar bottom'
       });
     }
 
@@ -35,11 +35,11 @@ class Header extends React.Component {
 
   render() {
     return (
-      <div style={{ zIndex:'10', backgroundColor: '', display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ marginLeft: '10px' }}>
-          <img alt='app-logo' src={require('../assets/app-logo.png').default} style={{width: '60px', height: '60px'}}></img>
-        </div>
-        <div id="container" onClick={this.toggle}>
+      <div className={'header_container'}>
+
+        <img alt={'app-logo'} className={'icon_img'} src={require('../assets/app-logo.png').default} ></img>
+
+        <div className={"sandwich_button"} onClick={this.toggle}>
           <div >
             <span id="topLine" className={this.state.classTop}></span>
             <span id="midLine" className={this.state.classMid}></span>
@@ -52,12 +52,3 @@ class Header extends React.Component {
 }
 
 export default Header;
-
-/*
-document.getElementById("container").addEventListener("click",function(){
-            document.getElementById("topLine").classList.toggle("move_left");
-            document.getElementById("midLine").classList.toggle("mid_rotate");
-            document.getElementById("bottomLine").classList.toggle("move_right");
-        });
-        */
-

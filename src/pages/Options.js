@@ -1,13 +1,14 @@
 import Heading from '../components/Heading';
 import PrimaryLayout from '../layout/PrimaryLayout';
-import Button from '../components/Button';
 import React from 'react';
 
 class Options extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      carIndex: 1
+      carIndex: 1,
+      soundButtonClass: 'button_class',
+      buttonText: 'ON'
     };
   }
 
@@ -19,29 +20,38 @@ class Options extends React.Component {
     this.setState({
       carIndex: newIndex
     });
-    //console.log(updateVar);
   }
+
+  toggle(){
+    let newText=this.state.buttonText;
+    newText=newText==='ON'?'OFF':'ON';
+
+    this.setState(
+      {
+        buttonText: newText
+      }
+    )
+  }
+
   render() {
-
-
     return (
       <PrimaryLayout>
-        <Heading className={'heading_class'} title={"Options"} />
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <div className='text_class' style={{ backgroundColor: '#00000025', padding: '20px', borderRadius: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'flex-start' }}>
-            <div margin='10px' >
+        <Heading title={"Options"} />
+        <div className={'options_container'}>
+          <div className={'text_class options_card'} >
+            <div>
               <div>Sounds</div>
-              <Button text='ON'></Button>
+              <button onClick={()=>{this.toggle(); }} className={'button_class'} >{this.state.buttonText}</button>
             </div>
-            <div style={{ width: '100%', marginTop: '10px' }} >
+            <div className={'car_select_container'} >
               <div>Select Car</div>
 
-              <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                <div style={{ width: '16rem', borderRadius: "5px", display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}>
+              <div className={'car_view_container'}>
+                <div className={'car_view_inside'}>
                   <img alt='cars' src={require('../assets/car' + this.state.carIndex + '.png').default}></img>
-                  <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px', marginTop: '20px', width: '100%' }}>
-                    <button onClick={() => { this.changeIndex(-1); }} style={{ borderRadius: '5px', backgroundColor: '#00000025', border: '0px', width: '40%' }} text='<'>{'<'}</button>
-                    <button onClick={() => { this.changeIndex(1); }} style={{ borderRadius: '5px', backgroundColor: '#00000025', border: '0px', width: '40%' }} text='<'>{'>'}</button>
+                  <div className={'select_button_container'}>
+                    <button className={'select_button text_class'} onClick={() => { this.changeIndex(-1); }} >{'<'}</button>
+                    <button className={'select_button text_class'} onClick={() => { this.changeIndex(1); }} >{'>'}</button>
                   </div>
                 </div>
               </div>

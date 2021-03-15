@@ -1,6 +1,5 @@
 import GamePanel from '../components/GamePanel';
 
-
 function GameScreen() {
   return (
       <GamePanel />
