@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes } from './routes';
 
+const SoundContext = React.createContext('ON');
+
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -19,7 +21,9 @@ class App extends React.Component {
   render() {
     return (
       <div className={"App"}>
+      <SoundContext.Provider value="ON">
         <Routes />
+        </SoundContext.Provider>
       </div>
     );
   }

@@ -1,9 +1,17 @@
-import React from 'react';
 import Header from './Header';
+import Webcam from "react-webcam";
+import * as handpose from "@tensorflow-models/handpose";
+import * as tf from "@tensorflow/tfjs";
+import * as fp from "fingerpose";
+import React from 'react';
 
 class GamePanel extends React.Component {
   constructor(props) {
     super(props);
+
+    //Web Cam Config
+    this.webcamRef = React.createRef();
+    this.canvasRef = React.createRef();
 
     //Car Configs and Action Variable
     this.speed = 0.5;
@@ -45,23 +53,23 @@ class GamePanel extends React.Component {
     //Keyboard Event
     document.body.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowRight') {
-        this.player.horizontalSpeed=this.speed;
+        this.player.horizontalSpeed = this.speed;
         this.move = 'right';
       }
 
       else if (event.key === 'ArrowLeft') {
-        this.player.horizontalSpeed=-this.speed;
+        this.player.horizontalSpeed = -this.speed;
         this.move = 'left';
       }
 
       else if (event.key === 'ArrowUp') {
-        this.player.verticalSpeed=-this.speed;
+        this.player.verticalSpeed = -this.speed;
         this.move = 'up';
         this.changeSpeed(1);
       }
 
       else if (event.key === 'ArrowDown') {
-        this.player.verticalSpeed=this.speed;
+        this.player.verticalSpeed = this.speed;
         this.move = 'down';
       }
       else if (event.key === ' ') {
@@ -72,8 +80,8 @@ class GamePanel extends React.Component {
 
     document.body.addEventListener('keyup', (event) => {
       this.move = 'not';
-      this.player.verticalSpeed=0;
-      this.player.horizontalSpeed=0;
+      this.player.verticalSpeed = 0;
+      this.player.horizontalSpeed = 0;
     });
 
     //for mobile events
@@ -84,24 +92,24 @@ class GamePanel extends React.Component {
       const bodyHeight = document.body.offsetHeight;
 
       if (x > bodyWidth * .8) {
-        this.player.horizontalSpeed=this.speed;
+        this.player.horizontalSpeed = this.speed;
         this.move = 'right';
       }
 
       else if (x < bodyWidth * .2) {
-        this.player.horizontalSpeed=-this.speed;
+        this.player.horizontalSpeed = -this.speed;
         this.move = 'left';
       }
 
       else if (y < bodyHeight * .6) {
-        this.player.verticalSpeed=-this.speed;
+        this.player.verticalSpeed = -this.speed;
         this.move = 'up';
         this.changeSpeed(1);
       }
 
       else if (y > bodyHeight * .6) {
         this.move = 'down';
-        this.player.verticalSpeed=this.speed;
+        this.player.verticalSpeed = this.speed;
         this.changeSpeed(-1);
       }
     });
@@ -109,9 +117,132 @@ class GamePanel extends React.Component {
     document.body.addEventListener('touchend', (event) => {
       this.move = 'not';
     });
+
+    //Hand Gesture Controls
+    this.runHandpose = async () => {
+      const net = await handpose.load();
+      console.log("Handpose model loaded.");
+      
+      //Starts after model gets loaded
+      //Game Loop
+      this.timerID1 = setInterval(
+        () => this.gameLoop(),
+        10
+      );
+
+      //Loop to start new obstacles
+      this.timerID2 = setInterval(
+        () => this.generateIndex(),
+        250
+      );
+      
+      //Loop and detect hands
+      setInterval(() => {
+        this.detect(net);
+      }, 200);
+    };
+
+    this.detect = async (net) => {
+      //Check data is available
+      if (
+        typeof this.webcamRef.current !== "undefined" &&
+        this.webcamRef.current !== null &&
+        this.webcamRef.current.video.readyState === 4
+      ) {
+
+        //Get Video Properties
+        const video = this.webcamRef.current.video;
+        const videoWidth = this.webcamRef.current.video.videoWidth;
+        const videoHeight = this.webcamRef.current.video.videoHeight;
+
+        //Set video width
+        this.webcamRef.current.video.width = videoWidth;
+        this.webcamRef.current.video.height = videoHeight;
+
+        //Set canvas height and width
+        this.canvasRef.current.width = videoWidth;
+        this.canvasRef.current.height = videoHeight;
+
+        //Make Detections
+        console.log("before:",Date.now());
+        const hand = await net.estimateHands(video);
+        //console.log("hand", hand);
+        console.log("after :",Date.now());
+
+        //Draw hand pointer and seperator
+        const ctx = this.canvasRef.current.getContext("2d");
+
+        const canvasUpMidX = videoWidth / 2;
+        const cavasUpMidY = 2;
+
+        const canvasDownMidX = videoWidth / 2;
+        const cavasDownMidY = videoHeight;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          canvasUpMidX,
+          cavasUpMidY,
+        );
+        ctx.lineTo(
+          canvasDownMidX,
+          cavasDownMidY,
+        );
+        ctx.strokeStyle = "gold";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        //drawHand(hand, ctx,videoWidth);
+        if (hand.length > 0) {
+          // Loop through each prediction
+          var prediction = hand[0];
+
+          const boundingBox = prediction.boundingBox;
+          const bottomRight = boundingBox.bottomRight;
+          const topLeft = boundingBox.topLeft;
+
+          const centerX = videoWidth - (topLeft[0] + bottomRight[0]) / 2;
+          const centerY = (topLeft[1] + bottomRight[1]) / 2;
+
+          //console.log(centerX);
+          //Action
+          if (centerX < videoWidth / 2) {
+            this.player.horizontalSpeed = -this.speed;
+            this.move = 'left';
+          }
+          else {
+            this.player.horizontalSpeed = this.speed;
+            this.move = 'right';
+          }
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+          ctx.fillStyle = "gold";
+          ctx.fill();
+        }
+        else {
+          this.move = 'not';
+          this.player.verticalSpeed = 0;
+          this.player.horizontalSpeed = 0;
+        }
+      }
+    };
+
+    /*
+    while(true){
+      this.gameLoop();
+      this.generateIndex();
+    }*/
   }
 
   componentDidMount() {
+    this.runHandpose();
+    /*
+    while(true){
+      this.gameLoop();
+      this.generateIndex();
+    }
+    */
+    /*
     //Game Loop
     this.timerID1 = setInterval(
       () => this.gameLoop(),
@@ -123,6 +254,7 @@ class GamePanel extends React.Component {
       () => this.generateIndex(),
       250
     );
+    */
   }
 
   componentWillUnmount() {
@@ -135,6 +267,9 @@ class GamePanel extends React.Component {
   }
 
   gameLoop() {
+    //var currTime=new Date();
+    console.log("Game Loop: ");
+
     //Actions for each events
     this.player.left += this.player.horizontalSpeed;
     this.player.top += this.player.verticalSpeed;
@@ -202,6 +337,7 @@ class GamePanel extends React.Component {
       }
     }
 
+    console.log("Before State");
     this.setState({});
   }
 
@@ -275,6 +411,7 @@ class GamePanel extends React.Component {
         <div className={'boundary'} style={{ left: '20%' }} ></div>
         <div className={'boundary'} style={{ left: '80%' }} ></div>
 
+
         {/* road bars mid */}
         <div className={'bars'} style={{ left: this.bars[0][0].left + '%', top: this.bars[0][0].top + '%' }} ></div>
         <div className={'bars'} style={{ left: this.bars[1][0].left + '%', top: this.bars[1][0].top + '%' }} ></div>
@@ -301,10 +438,16 @@ class GamePanel extends React.Component {
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[3].left + '%', top: this.obstacles[3].top + '%' }} src={require('../assets/car_down4.png').default}></img>
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>
 
-      </div>
+        <Webcam ref={this.webcamRef} className="video_area"/>
+        <canvas ref={this.canvasRef} className="video_area"/>
 
+      </div>
     );
   }
+}
+
+function Bar(props) {
+  return (<div className={'bars'} style={{ left: props.left + '%', top: props.top + '%' }} ></div>);
 }
 
 export default GamePanel;
