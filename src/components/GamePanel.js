@@ -9,15 +9,20 @@ class GamePanel extends React.Component {
   constructor(props) {
     super(props);
 
+    this.iframeRef = React.createRef();
+    this.other=0;
+    
     //Web Cam Config
     this.webcamRef = React.createRef();
     this.canvasRef = React.createRef();
 
     //Car Configs and Action Variable
+    this.score=0;
+    this.scoreSteps=10;
     this.speed = 0.5;
     this.player = {
       left: 48.2,
-      top: 75,
+      top: 78,
       horizontalSpeed: 0,
       verticalSpeed: 0,
     }
@@ -40,7 +45,7 @@ class GamePanel extends React.Component {
       this.temp = [];
       for (let j = 0; j < 3; j++) {
         this.temp.push({
-          left: j * 20 + 30,
+          left: j * 16 + 42,
           top: i * 40,
         });
       }
@@ -91,12 +96,12 @@ class GamePanel extends React.Component {
       const bodyWidth = document.body.offsetWidth;
       const bodyHeight = document.body.offsetHeight;
 
-      if (x > bodyWidth * .8) {
+      if (x > bodyWidth * .7) {
         this.player.horizontalSpeed = this.speed;
         this.move = 'right';
       }
 
-      else if (x < bodyWidth * .2) {
+      else if (x < bodyWidth * .3) {
         this.player.horizontalSpeed = -this.speed;
         this.move = 'left';
       }
@@ -126,22 +131,34 @@ class GamePanel extends React.Component {
       //Starts after model gets loaded
       //Game Loop
       this.timerID1 = setInterval(
-        () => this.gameLoop(),
-        10
+        () => {
+          this.gameLoop();
+          this.other+=1;
+          if(this.other===10){
+            this.generateIndex();
+            this.detect(net);
+            this.other=0;
+          }
+        },
+        20
       );
 
+      /*
       //Loop to start new obstacles
       this.timerID2 = setInterval(
-        () => this.generateIndex(),
+        () => {this.generateIndex(); this.detect(net);},
         250
-      );
+      );*/
       
+      /*
       //Loop and detect hands
       setInterval(() => {
         this.detect(net);
       }, 200);
+      */
     };
 
+    ///*////////////////////////
     this.detect = async (net) => {
       //Check data is available
       if (
@@ -166,6 +183,7 @@ class GamePanel extends React.Component {
         //Make Detections
         console.log("before:",Date.now());
         const hand = await net.estimateHands(video);
+        this.gameLoop();
         //console.log("hand", hand);
         console.log("after :",Date.now());
 
@@ -215,8 +233,8 @@ class GamePanel extends React.Component {
           }
 
           ctx.beginPath();
-          ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-          ctx.fillStyle = "gold";
+          ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+          ctx.fillStyle = "#000000";
           ctx.fill();
         }
         else {
@@ -226,6 +244,7 @@ class GamePanel extends React.Component {
         }
       }
     };
+    ///////////////////////*/
 
     /*
     while(true){
@@ -235,6 +254,41 @@ class GamePanel extends React.Component {
   }
 
   componentDidMount() {
+    //iframe events
+    /*
+    this.iframeRef.current.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        this.player.horizontalSpeed = this.speed;
+        this.move = 'right';
+      }
+
+      else if (event.key === 'ArrowLeft') {
+        this.player.horizontalSpeed = -this.speed;
+        this.move = 'left';
+      }
+
+      else if (event.key === 'ArrowUp') {
+        this.player.verticalSpeed = -this.speed;
+        this.move = 'up';
+        this.changeSpeed(1);
+      }
+
+      else if (event.key === 'ArrowDown') {
+        this.player.verticalSpeed = this.speed;
+        this.move = 'down';
+      }
+      else if (event.key === ' ') {
+        this.move = 'space';
+        this.changeSpeed(-1);
+      }
+    });
+
+    this.iframeRef.current.addEventListener('keyup', (event) => {
+      this.move = 'not';
+      this.player.verticalSpeed = 0;
+      this.player.horizontalSpeed = 0;
+    });
+    */
     this.runHandpose();
     /*
     while(true){
@@ -259,7 +313,7 @@ class GamePanel extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.timerID1);
-    clearInterval(this.timerID2);
+    //clearInterval(this.timerID2);
   }
 
   generateIndex() {
@@ -268,24 +322,24 @@ class GamePanel extends React.Component {
 
   gameLoop() {
     //var currTime=new Date();
-    console.log("Game Loop: ");
+    //console.log("Game Loop: ");
 
     //Actions for each events
     this.player.left += this.player.horizontalSpeed;
     this.player.top += this.player.verticalSpeed;
 
-    this.player.left = this.player.left < 22 ? 22 : this.player.left;
-    this.player.left = this.player.left > 74 ? 74 : this.player.left;
+    this.player.left = this.player.left < 32 ? 32 : this.player.left;
+    this.player.left = this.player.left > 64 ? 64 : this.player.left;
 
     this.player.top = this.player.top < 50 ? 50 : this.player.top;
-    this.player.top = this.player.top > 75 ? 75 : this.player.top;
+    this.player.top = this.player.top > 78 ? 78 : this.player.top;
 
     //for new obstacles
     const num = this.randomIndex;
     if (!this.obstacles[num].rendered) {
-      let leftPos = Math.floor(Math.random() * 50) + 22;
-      leftPos = leftPos < 22 ? 22 : leftPos;
-      leftPos = leftPos > 74 ? 74 : leftPos;
+      let leftPos = Math.floor(Math.random() * 36) + 30;
+      leftPos = leftPos < 32 ? 32 : leftPos;
+      leftPos = leftPos > 64 ? 64 : leftPos;
       this.obstacles[num].left = leftPos;
       this.obstacles[num].speed = (Math.random() * 0.2) + this.speed + 0.2;
       this.obstacles[num].rendered = true;
@@ -301,6 +355,7 @@ class GamePanel extends React.Component {
         this.obstacles[i].rendered = false;
         this.obstacles[i].top = -200;
         this.obstacles[i].left = i * 20;
+        this.score+=this.scoreSteps;
       }
     }
 
@@ -312,7 +367,7 @@ class GamePanel extends React.Component {
             if (this.obstacles[i].speed >= this.obstacles[j].speed) {
               this.obstacles[i].speed -= 0.1;
             }
-            this.obstacles[i].top = this.obstacles[j].top - 30;
+            //this.obstacles[i].top = this.obstacles[j].top - 30;
           }
         }
       }
@@ -337,7 +392,7 @@ class GamePanel extends React.Component {
       }
     }
 
-    console.log("Before State");
+    //console.log("Before State");
     this.setState({});
   }
 
@@ -408,10 +463,9 @@ class GamePanel extends React.Component {
         <img alt={'car-sprite'} className={'sprite'} style={{ left: this.player.left + '%', top: this.player.top + '%' }} src={require('../assets/car1.png').default}></img>
 
         {/* boundary */}
-        <div className={'boundary'} style={{ left: '20%' }} ></div>
-        <div className={'boundary'} style={{ left: '80%' }} ></div>
-
-
+        <div className={'boundary'} style={{ left: '30%' }} ></div>
+        <div className={'boundary'} style={{ left: '70%' }} ></div>
+        
         {/* road bars mid */}
         <div className={'bars'} style={{ left: this.bars[0][0].left + '%', top: this.bars[0][0].top + '%' }} ></div>
         <div className={'bars'} style={{ left: this.bars[1][0].left + '%', top: this.bars[1][0].top + '%' }} ></div>
@@ -425,11 +479,12 @@ class GamePanel extends React.Component {
         <div className={'bars'} style={{ left: this.bars[3][1].left + '%', top: this.bars[3][1].top + '%' }} ></div>
 
         {/* road bars right */}
+        {/*
         <div className={'bars'} style={{ left: this.bars[0][2].left + '%', top: this.bars[0][2].top + '%' }} ></div>
         <div className={'bars'} style={{ left: this.bars[1][2].left + '%', top: this.bars[1][2].top + '%' }} ></div>
         <div className={'bars'} style={{ left: this.bars[2][2].left + '%', top: this.bars[2][2].top + '%' }} ></div>
         <div className={'bars'} style={{ left: this.bars[3][2].left + '%', top: this.bars[3][2].top + '%' }} ></div>
-
+        */}
 
         {/* Obstructions */}
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[0].left + '%', top: this.obstacles[0].top + '%' }} src={require('../assets/car_down1.png').default}></img>
@@ -437,10 +492,16 @@ class GamePanel extends React.Component {
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[2].left + '%', top: this.obstacles[2].top + '%' }} src={require('../assets/car_down3.png').default}></img>
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[3].left + '%', top: this.obstacles[3].top + '%' }} src={require('../assets/car_down4.png').default}></img>
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>
-
+      
+        <span style={{margin: "10px", fontSize: "24px"}}>Score: {this.score}</span>
+    
         <Webcam ref={this.webcamRef} className="video_area"/>
         <canvas ref={this.canvasRef} className="video_area"/>
-
+        
+        
+{/*
+      <iframe ref={this.iframeRef} src="http://localhost:3001/" allow="camera;microphone" className="video_area"></iframe>
+*/}
       </div>
     );
   }
