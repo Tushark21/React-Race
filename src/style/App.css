@@ -280,7 +280,31 @@ button:hover{
   position: absolute;
   left: 3%;
   bottom: 10px;
-  z-index: 9;
+  z-index: 10;
   width: 14%;
   height: 22%;
+}
+
+.game_over{
+  position: relative;
+  z-index: 15;
+  display: flex;
+  width: 50%;
+  height: 80%;
+  padding: 0px;
+  margin-left: 26%;
+  margin-top: 0px;
+  font-size: 100px;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: #014e4a;
+  border-radius: 20px;
+  box-shadow: 0 0 50px 2px rgb(0, 0, 0);
+}
+.game_over_button{
+  font-size: 40px;
+  color: white;
+  background-color: #00000020;
+  margin: 20px;
 }

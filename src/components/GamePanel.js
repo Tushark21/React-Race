@@ -4,6 +4,7 @@ import * as handpose from "@tensorflow-models/handpose";
 import * as tf from "@tensorflow/tfjs";
 import * as fp from "fingerpose";
 import React from 'react';
+import GameOver from './GameOver';
 
 class GamePanel extends React.Component {
   constructor(props) {
@@ -11,7 +12,8 @@ class GamePanel extends React.Component {
 
     this.iframeRef = React.createRef();
     this.other=0;
-    
+    this.promptVisible="hidden";
+
     //Web Cam Config
     this.webcamRef = React.createRef();
     this.canvasRef = React.createRef();
@@ -386,8 +388,10 @@ class GamePanel extends React.Component {
     //collisions between obstacles and car
     for (let i = 0; i < 5; i++) {
       if (this.isCollided(this.createRect(this.player), this.createRect(this.obstacles[i]))) {
-        //clearInterval(this.timerID1);
+        
+        clearInterval(this.timerID1);
         //clearInterval(this.timerID2);
+        this.promptVisible="visible";
         break;
       }
     }
@@ -502,6 +506,7 @@ class GamePanel extends React.Component {
 {/*
       <iframe ref={this.iframeRef} src="http://localhost:3001/" allow="camera;microphone" className="video_area"></iframe>
 */}
+      <GameOver score={this.score} isVisible={this.promptVisible}/>
       </div>
     );
   }
