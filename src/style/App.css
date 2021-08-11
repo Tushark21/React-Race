@@ -273,7 +273,7 @@ button:hover{
   border-radius: 2px;
   background-color: #00000025;
   border: 0px;
-  width: 40%;
+  width: 20vw;
 }
 
 .video_area{
@@ -289,12 +289,12 @@ button:hover{
   position: relative;
   z-index: 15;
   display: flex;
-  width: 50%;
-  height: 80%;
+  width: 45vw;
+  height: 70vh;
   padding: 0px;
-  margin-left: 26%;
-  margin-top: 0px;
-  font-size: 100px;
+  margin-left: 28.25vw;
+  margin-top: 2vh;
+  font-size: 3vw;
   justify-content: center;
   flex-direction: column;
   align-items: center;
@@ -302,9 +302,14 @@ button:hover{
   border-radius: 20px;
   box-shadow: 0 0 50px 2px rgb(0, 0, 0);
 }
+
 .game_over_button{
-  font-size: 40px;
+  font-size: 2.5vw;
   color: white;
   background-color: #00000020;
   margin: 20px;
+}
+
+span{
+  text-align: center;
 }

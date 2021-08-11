@@ -130,11 +130,14 @@ class GamePanel extends React.Component {
       const net = await handpose.load();
       console.log("Handpose model loaded.");
       
+      //*************loading animation will be added here****************
+
       //Starts after model gets loaded
       //Game Loop
       this.timerID1 = setInterval(
         () => {
           this.gameLoop();
+          
           this.other+=1;
           if(this.other===10){
             this.generateIndex();
@@ -144,20 +147,6 @@ class GamePanel extends React.Component {
         },
         20
       );
-
-      /*
-      //Loop to start new obstacles
-      this.timerID2 = setInterval(
-        () => {this.generateIndex(); this.detect(net);},
-        250
-      );*/
-      
-      /*
-      //Loop and detect hands
-      setInterval(() => {
-        this.detect(net);
-      }, 200);
-      */
     };
 
     ///*////////////////////////
@@ -246,71 +235,10 @@ class GamePanel extends React.Component {
         }
       }
     };
-    ///////////////////////*/
-
-    /*
-    while(true){
-      this.gameLoop();
-      this.generateIndex();
-    }*/
   }
 
   componentDidMount() {
-    //iframe events
-    /*
-    this.iframeRef.current.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') {
-        this.player.horizontalSpeed = this.speed;
-        this.move = 'right';
-      }
-
-      else if (event.key === 'ArrowLeft') {
-        this.player.horizontalSpeed = -this.speed;
-        this.move = 'left';
-      }
-
-      else if (event.key === 'ArrowUp') {
-        this.player.verticalSpeed = -this.speed;
-        this.move = 'up';
-        this.changeSpeed(1);
-      }
-
-      else if (event.key === 'ArrowDown') {
-        this.player.verticalSpeed = this.speed;
-        this.move = 'down';
-      }
-      else if (event.key === ' ') {
-        this.move = 'space';
-        this.changeSpeed(-1);
-      }
-    });
-
-    this.iframeRef.current.addEventListener('keyup', (event) => {
-      this.move = 'not';
-      this.player.verticalSpeed = 0;
-      this.player.horizontalSpeed = 0;
-    });
-    */
     this.runHandpose();
-    /*
-    while(true){
-      this.gameLoop();
-      this.generateIndex();
-    }
-    */
-    /*
-    //Game Loop
-    this.timerID1 = setInterval(
-      () => this.gameLoop(),
-      1
-    );
-
-    //Loop to start new obstacles
-    this.timerID2 = setInterval(
-      () => this.generateIndex(),
-      250
-    );
-    */
   }
 
   componentWillUnmount() {
@@ -348,7 +276,8 @@ class GamePanel extends React.Component {
     }
 
     //for obstacles movement
-    for (let i = 0; i < 5; i++) {
+    //4 may be changed
+    for (let i = 0; i < 4; i++) {
       if (this.obstacles[i].rendered) {
         this.obstacles[i].top += this.obstacles[i].speed + this.speed;
       }
