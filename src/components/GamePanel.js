@@ -29,13 +29,14 @@ class GamePanel extends React.Component {
       verticalSpeed: 0,
     }
     this.move = 'not';
-
+    
     //Obstacles
+    this.obstaclesCount=5;
     this.obstacles = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.obstaclesCount; i++) {
       this.obstacles.push({
-        left: i * 20,
-        top: -200,
+        left: i * (100/this.obstaclesCount),
+        top: -200-(i*50),
         speed: 0,
         rendered: false,
       });
@@ -54,7 +55,7 @@ class GamePanel extends React.Component {
       this.bars.push(this.temp);
     }
 
-    this.randomIndex = 0;
+    this.randomIndex = 2;
 
     //User Events
     //Keyboard Event
@@ -172,11 +173,11 @@ class GamePanel extends React.Component {
         this.canvasRef.current.height = videoHeight;
 
         //Make Detections
-        console.log("before:",Date.now());
+        //console.log("before:",Date.now());
         const hand = await net.estimateHands(video);
         this.gameLoop();
         //console.log("hand", hand);
-        console.log("after :",Date.now());
+        //console.log("after :",Date.now());
 
         //Draw hand pointer and seperator
         const ctx = this.canvasRef.current.getContext("2d");
@@ -247,7 +248,7 @@ class GamePanel extends React.Component {
   }
 
   generateIndex() {
-    this.randomIndex = Math.floor(Math.random() * 5);
+    this.randomIndex = Math.floor(Math.random() * this.obstaclesCount);
   }
 
   gameLoop() {
@@ -277,7 +278,7 @@ class GamePanel extends React.Component {
 
     //for obstacles movement
     //4 may be changed
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.obstaclesCount; i++) {
       if (this.obstacles[i].rendered) {
         this.obstacles[i].top += this.obstacles[i].speed + this.speed;
       }
@@ -291,8 +292,8 @@ class GamePanel extends React.Component {
     }
 
     //collisions between obstacles
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < 5; j++) {
+    for (let i = 0; i < this.obstaclesCount; i++) {
+      for (let j = 0; j < this.obstaclesCount; j++) {
         if (this.isCollided(this.createRect(this.obstacles[i]), this.createRect(this.obstacles[j]))) {
           if (this.obstacles[i].top < this.obstacles[j].top) {
             if (this.obstacles[i].speed >= this.obstacles[j].speed) {
@@ -315,9 +316,9 @@ class GamePanel extends React.Component {
     }
 
     //collisions between obstacles and car
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.obstaclesCount; i++) {
       if (this.isCollided(this.createRect(this.player), this.createRect(this.obstacles[i]))) {
-        
+        ////////////////////////////////////////////
         clearInterval(this.timerID1);
         //clearInterval(this.timerID2);
         this.promptVisible="visible";
@@ -424,9 +425,9 @@ class GamePanel extends React.Component {
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[1].left + '%', top: this.obstacles[1].top + '%' }} src={require('../assets/car_down2.png').default}></img>
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[2].left + '%', top: this.obstacles[2].top + '%' }} src={require('../assets/car_down3.png').default}></img>
         <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[3].left + '%', top: this.obstacles[3].top + '%' }} src={require('../assets/car_down4.png').default}></img>
-        <img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>
+        {/*<img alt={'obstacle'} className={'sprite'} style={{ left: this.obstacles[4].left + '%', top: this.obstacles[4].top + '%' }} src={require('../assets/car_down5.png').default}></img>*/}
       
-        <span style={{margin: "10px", fontSize: "24px"}}>Score: {this.score}</span>
+        <span className="score_banner">Score: {this.score}</span>
     
         <Webcam ref={this.webcamRef} className="video_area"/>
         <canvas ref={this.canvasRef} className="video_area"/>

@@ -219,6 +219,8 @@ button:hover{
 
 .sprite{
   z-index: 1;
+  width: 5%;
+  height: 10vw;
   position: fixed;
   display: block;
 }
@@ -273,7 +275,7 @@ button:hover{
   border-radius: 2px;
   background-color: #00000025;
   border: 0px;
-  width: 20vw;
+  width: 18vw;
 }
 
 .video_area{
@@ -290,15 +292,16 @@ button:hover{
   z-index: 15;
   display: flex;
   width: 45vw;
-  height: 70vh;
+  height: 60vh;
   padding: 0px;
   margin-left: 28.25vw;
-  margin-top: 2vh;
+  margin-top: 3vh;
   font-size: 3vw;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  background-color: #014e4a;
+  /*background-image: linear-gradient(-225deg, #473B7B 0%, #3584A7 51%, #30D2BE 100%);*/
+  background-color: #0f4b53;
   border-radius: 20px;
   box-shadow: 0 0 50px 2px rgb(0, 0, 0);
 }
@@ -308,6 +311,11 @@ button:hover{
   color: white;
   background-color: #00000020;
   margin: 20px;
+}
+
+.score_banner{
+  margin: 10px;
+  font-size: 3vw;
 }
 
 span{
